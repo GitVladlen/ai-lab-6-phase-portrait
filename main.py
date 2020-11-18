@@ -282,24 +282,21 @@ root.wm_title("Фазовый портрет сигнала ЕКГ")
 
 fig = Figure(figsize=(14, 3), dpi=100)
 
-# sub_plot = fig.add_subplot(311)
-# ecg_plot, = sub_plot.plot(data)
-
-# _, (ax1, ax2, ax3) = fig.subplots(nrows=3, ncols=1, figsize=(16, 10))
+fig.subplots_adjust(wspace=0, hspace=0.4)
 
 sub_plot_1 = fig.add_subplot(311)
 
-sub_plot_1.plot(t, signal1, 'r')
+ecg_plot_1, = sub_plot_1.plot(t, signal1, 'r')
 sub_plot_1.set_title('Original Signal')
 
 sub_plot_2 = fig.add_subplot(312)
 
-sub_plot_2.plot(d, signal1, 'r')
+ecg_plot_2, = sub_plot_2.plot(d, signal1, 'r')
 sub_plot_2.set_title('Phazes on dz/dt')
 
 sub_plot_3 = fig.add_subplot(313)
 
-sub_plot_3.plot(y, signal1, 'r')
+ecg_plot_3, = sub_plot_3.plot(y, signal1, 'r')
 sub_plot_3.set_title('Phazez on z(t - pause)')
 
 canvas = FigureCanvasTkAgg(fig, master=root)  # A tk.DrawingArea.
@@ -307,8 +304,58 @@ canvas.draw()
 
 canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
+var_mode = tkinter.IntVar()
+var_mode.set(1)
+
+controll_pane = tkinter.PanedWindow(root)
+controll_pane.pack(side=tkinter.BOTTOM, fill=tkinter.BOTH, expand=1)
+
+label_frame_params = tkinter.LabelFrame(controll_pane, text="Параметры сглаживания")
+label_frame_params.pack(pady=5, padx=5, fill=tkinter.BOTH, expand=1)
+
+def update_plot(*args):
+    mode = var_mode.get()
+
+    if mode == 1:
+        signal1 = signal
+    else:
+        signal1 = signal2
+
+    t = [i * 0.05 for i in range(len(signal1))]
+    d = np.gradient(signal1, t)
+
+    # pause = int(input('Print pause \n'))
+    pause = 2
+    y = np.zeros(len(signal1))
+    for i in range(pause, len(signal1)):
+        y[i - pause] = signal1[i]
+
+    ecg_plot_1.set_xdata(t)
+    ecg_plot_1.set_ydata(signal1)
+
+    ecg_plot_2.set_xdata(d)
+    ecg_plot_2.set_ydata(signal1)
+
+    ecg_plot_3.set_xdata(y)
+    ecg_plot_3.set_ydata(signal1)
+
+    canvas.draw()
+    pass
+
+tkinter.Radiobutton(label_frame_params,
+                    text="File 1",
+                    variable=var_mode,
+                    value=1,
+                    command=update_plot).pack(anchor=tkinter.W)
+
+tkinter.Radiobutton(label_frame_params,
+                    text="File 2",
+                    variable=var_mode,
+                    value=2,
+                    command=update_plot).pack(anchor=tkinter.W)
+
 root.mainloop()
-#
+
 # while k:
 #     if k == 1:
 #         signal1 = signal
