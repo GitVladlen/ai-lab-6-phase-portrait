@@ -244,6 +244,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+import tkinter
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
+
 data = open("ЕКГ_КП6_1.txt", "r")
 r = []
 for line in data:
@@ -257,35 +261,80 @@ for line in data:
     r += line.split()
 signal2 = np.array(r, dtype=np.float)
 
-k = int(input('Choose graphic 1 or 2 :\n\n'))
+k = 1
 
-while k:
-    if k == 1:
-        signal1 = signal
-    else:
-        signal1 = signal2
+if k == 1:
+    signal1 = signal
+else:
+    signal1 = signal2
 
-    t = [i * 0.05 for i in range(len(signal1))]
-    d = np.gradient(signal1, t)
+t = [i * 0.05 for i in range(len(signal1))]
+d = np.gradient(signal1, t)
 
-    pause = int(input('Print pause \n'))
-    y = np.zeros(len(signal1))
-    for i in range(pause, len(signal1)):
-        y[i - pause] = signal1[i]
+# pause = int(input('Print pause \n'))
+pause = 2
+y = np.zeros(len(signal1))
+for i in range(pause, len(signal1)):
+    y[i - pause] = signal1[i]
 
-    # Plotting
-    plt.figure(figsize=(12, 5))
-    fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, ncols=1, figsize=(16, 10))
-    plt.subplots_adjust(wspace=0, hspace=0.4)
+root = tkinter.Tk()
+root.wm_title("Фазовый портрет сигнала ЕКГ")
 
-    ax1.plot(t, signal1, 'r')
-    ax1.set_title('Original Signal')
+fig = Figure(figsize=(14, 3), dpi=100)
 
-    ax2.plot(d, signal1, 'r')
-    ax2.set_title('Phazes on dz/dt')
+# sub_plot = fig.add_subplot(311)
+# ecg_plot, = sub_plot.plot(data)
 
-    ax3.plot(y, signal1, 'r')
-    ax3.set_title('Phazez on z(t - pause)')
-    plt.show()
+# _, (ax1, ax2, ax3) = fig.subplots(nrows=3, ncols=1, figsize=(16, 10))
 
-    k = int(input('Choose graphic 1 or 2 :\nIf you want exit: type 0\n\n'))
+sub_plot_1 = fig.add_subplot(311)
+
+sub_plot_1.plot(t, signal1, 'r')
+sub_plot_1.set_title('Original Signal')
+
+sub_plot_2 = fig.add_subplot(312)
+
+sub_plot_2.plot(d, signal1, 'r')
+sub_plot_2.set_title('Phazes on dz/dt')
+
+sub_plot_3 = fig.add_subplot(313)
+
+sub_plot_3.plot(y, signal1, 'r')
+sub_plot_3.set_title('Phazez on z(t - pause)')
+
+canvas = FigureCanvasTkAgg(fig, master=root)  # A tk.DrawingArea.
+canvas.draw()
+
+canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
+
+root.mainloop()
+#
+# while k:
+#     if k == 1:
+#         signal1 = signal
+#     else:
+#         signal1 = signal2
+#
+#     t = [i * 0.05 for i in range(len(signal1))]
+#     d = np.gradient(signal1, t)
+#
+#     pause = int(input('Print pause \n'))
+#     y = np.zeros(len(signal1))
+#     for i in range(pause, len(signal1)):
+#         y[i - pause] = signal1[i]
+#
+#     # Plotting
+#     fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, ncols=1, figsize=(16, 10))
+#     plt.subplots_adjust(wspace=0, hspace=0.4)
+#
+#     ax1.plot(t, signal1, 'r')
+#     ax1.set_title('Original Signal')
+#
+#     ax2.plot(d, signal1, 'r')
+#     ax2.set_title('Phazes on dz/dt')
+#
+#     ax3.plot(y, signal1, 'r')
+#     ax3.set_title('Phazez on z(t - pause)')
+#     plt.show()
+#
+#     k = int(input('Choose graphic 1 or 2 :\nIf you want exit: type 0\n\n'))
