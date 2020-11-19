@@ -51,14 +51,14 @@ sub_plot_2 = fig.add_subplot(312)
 sub_plot_3 = fig.add_subplot(313)
 
 sub_plot_1.set_title('Original Signal')
-sub_plot_2.set_title('Phazes on dz/dt')
-sub_plot_3.set_title('Phazez on z(t - pause)')
+sub_plot_2.set_title('Phases on dz/dt')
+sub_plot_3.set_title('Phases on z(t - pause)')
 
 ecg_plot_1, ecg_plot_2, ecg_plot_3 = plot(
     sub_plot_1, sub_plot_2, sub_plot_3,
     signal1, pause)
 
-canvas = FigureCanvasTkAgg(fig, master=root)  # A tk.DrawingArea.
+canvas = FigureCanvasTkAgg(fig, master=root)
 canvas.draw()
 
 canvas.get_tk_widget().pack(side=tkinter.LEFT, fill=tkinter.BOTH, expand=1)
@@ -72,11 +72,8 @@ param_delay.set(1)
 controll_pane = tkinter.PanedWindow(root)
 controll_pane.pack(side=tkinter.RIGHT, fill=tkinter.BOTH, expand=1)
 
-label_frame_params = tkinter.LabelFrame(controll_pane, text="Параметры сглаживания")
+label_frame_params = tkinter.LabelFrame(controll_pane, text="Параметры")
 label_frame_params.pack(pady=5, padx=5, fill=tkinter.BOTH, expand=1)
-
-
-
 
 
 def reset_plot(*args):
@@ -130,22 +127,22 @@ def update_plot(*args):
 
 
 tkinter.Radiobutton(label_frame_params,
-                    text="File 1",
+                    text="Сигнал из файла 'ЕКГ_КП6_1.txt'",
                     variable=var_mode,
                     value=1,
                     command=reset_plot).pack(anchor=tkinter.W)
 
 tkinter.Radiobutton(label_frame_params,
-                    text="File 2",
+                    text="Сигнал из файла 'ЕКГ_КП6_2.txt'",
                     variable=var_mode,
                     value=2,
                     command=reset_plot).pack(anchor=tkinter.W)
 
 scale_pane = tkinter.PanedWindow(label_frame_params)
-scale_pane.pack(side=tkinter.LEFT)
+scale_pane.pack(side=tkinter.TOP)
 
 tkinter.Scale(scale_pane,
-              label="Задержка",
+              label="Задержка (tilda)",
               from_=0,
               to=50,
               orient=tkinter.HORIZONTAL,
