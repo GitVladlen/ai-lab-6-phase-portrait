@@ -18,9 +18,10 @@ signal2 = np.array(r, dtype=np.float)
 
 signal1 = signal
 pause = 1
+color = 'b'
 
 
-def plot(plt1, plt2, plt3, ecg_signal, pause_value):
+def plot(plt1, plt2, plt3, ecg_signal, pause_value, color):
     t = [i * 0.05 for i in range(len(ecg_signal))]
     d = np.gradient(ecg_signal, t)
 
@@ -32,9 +33,9 @@ def plot(plt1, plt2, plt3, ecg_signal, pause_value):
     plt2.clear()
     plt3.clear()
 
-    ax1, = plt1.plot(t, ecg_signal, 'r')
-    ax2, = plt2.plot(d, ecg_signal, 'r')
-    ax3, = plt3.plot(y, ecg_signal, 'r')
+    ax1, = plt1.plot(t, ecg_signal, color)
+    ax2, = plt2.plot(d, ecg_signal, color)
+    ax3, = plt3.plot(y, ecg_signal, color)
 
     return ax1, ax2, ax3
 
@@ -56,7 +57,7 @@ sub_plot_3.set_title('Phases on z(t - pause)')
 
 ecg_plot_1, ecg_plot_2, ecg_plot_3 = plot(
     sub_plot_1, sub_plot_2, sub_plot_3,
-    signal1, pause)
+    signal1, pause, color)
 
 canvas = FigureCanvasTkAgg(fig, master=root)
 canvas.draw()
@@ -86,8 +87,10 @@ def reset_plot(*args):
 
     if mode == 1:
         signal1 = signal
+        color = 'b'
     else:
         signal1 = signal2
+        color = 'r'
 
     global fig
     global sub_plot_1
@@ -100,7 +103,7 @@ def reset_plot(*args):
 
     ecg_plot_1, ecg_plot_2, ecg_plot_3 = plot(
         sub_plot_1, sub_plot_2, sub_plot_3,
-        signal1, pause)
+        signal1, pause, color)
 
     canvas.draw()
 
@@ -142,7 +145,7 @@ scale_pane = tkinter.PanedWindow(label_frame_params)
 scale_pane.pack(side=tkinter.TOP)
 
 tkinter.Scale(scale_pane,
-              label="Задержка (tilda)",
+              label="Задержка (tau)",
               from_=0,
               to=50,
               orient=tkinter.HORIZONTAL,
